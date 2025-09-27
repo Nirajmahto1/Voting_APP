@@ -1,6 +1,4 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
-const { setThePassword } = require('whatwg-url')
 
 const candidateSchema = new mongoose.Schema({
     name:{

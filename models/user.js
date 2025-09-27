@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
-const { setThePassword } = require('whatwg-url')
-
+const bcrypt = require('bcrypt')
 const userSchema = new mongoose.Schema({
     name:{
         type:String,
