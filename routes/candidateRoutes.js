@@ -12,7 +12,7 @@ const checkAdminRole =async (userID)=>{
 try{
    
     const user = await User.findById(userID)
-  
+    console.log(user.role)
     if(user.role === 'admin'){
         return true;
     }else{
@@ -77,6 +77,46 @@ router.delete('/:candidateID',jwtAuthMiddleware,async(req,res)=>{
     }catch(err){
           console.error(err)
         res.status(500).json({error:'Internal server Error'})
+    }
+})
+router.post('/vote/:candidateID',jwtAuthMiddleware,async(req,res)=>{
+    const candidateID = req.params.candidateID
+    userId = req.user.id
+    
+    try{
+        const candidate = await Candidate.findById(candidateID)
+        if(!candidate) return res.status(404).json({message:'Candidate Not found'})
+        
+        const user = await User.findById(userId)
+        if(!user) return res.status(404).json({message:'User Not found'})
+        if(user.isVoted) return res.status(400).json({message:'User already Voted'})
+        if(user.role === 'admin'){
+            return res.status(403).json({message:'Admin not allowed'})
+        }
+        candidate.votes.push({user:userId})
+        candidate.voteCount++
+        await candidate.save()
+        user.isVoted = true
+        await user.save()
+        return res.status(200).json({message:'Voted Success fully'})
+    }catch(err){
+        res.status(500).json({message:'Internal Server Error'})
+    }
+})
+router.get('/vote/count',async (req,res)=>{
+    try{
+        const candidate = await Candidate.find().sort({voteCount:'desc'})
+        const record = candidate.map((data)=>{
+            return {
+                party:data.party,
+                count:data.voteCount
+            }
+        })
+        return res.status(200).json(record)
+
+    }catch(err){
+res.status(500).json({message:'Internal Server Error'})
+    
     }
 })
 module.exports = router
