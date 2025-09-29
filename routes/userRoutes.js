@@ -11,7 +11,7 @@ router.post('/signup',async(req,res)=>{
         const newUser = new User(data)
         
         const response = await newUser.save()
-        console.log('data saved');
+      
 
         const payload = {
             id:response.id
@@ -57,7 +57,7 @@ router.get('/profile',jwtAuthMiddleware,async(req,res)=>{
 })
 router.put('/profile/password',jwtAuthMiddleware,async(req,res)=>{
     try{
-        const userId = req.user;
+        const userId = req.user.id;
         const {currentPassword,newPassword} = req.body;
         const user = await User.findById(userId)
          if(!(await user.comparePassword(currentPassword))){

@@ -98,7 +98,7 @@ router.post('/vote/:candidateID',jwtAuthMiddleware,async(req,res)=>{
         await candidate.save()
         user.isVoted = true
         await user.save()
-        return res.status(200).json({message:'Voted Success fully'})
+        return res.status(200).json({message:'Voted Successfully'})
     }catch(err){
         res.status(500).json({message:'Internal Server Error'})
     }
@@ -106,6 +106,8 @@ router.post('/vote/:candidateID',jwtAuthMiddleware,async(req,res)=>{
 router.get('/vote/count',async (req,res)=>{
     try{
         const candidate = await Candidate.find().sort({voteCount:'desc'})
+        
+       
         const record = candidate.map((data)=>{
             return {
                 party:data.party,
@@ -117,6 +119,20 @@ router.get('/vote/count',async (req,res)=>{
     }catch(err){
 res.status(500).json({message:'Internal Server Error'})
     
+    }
+})
+router.get('/list',async(req,res)=>{
+    try{
+    const list = await Candidate.find()
+    const record = list.map((data)=>{
+        return {
+            name:data.name,
+            party:data.party
+        }
+    })
+    res.status(200).json(record)
+    }catch(err){
+        res.status(500).json({message:"Internal Server Error"})
     }
 })
 module.exports = router
