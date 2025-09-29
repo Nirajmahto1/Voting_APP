@@ -4,10 +4,6 @@ const Candidate = require('../models/candidate')
 const {jwtAuthMiddleware} = require('../jwt')
 const User = require('../models/user')
 
-
-
-
-
 const checkAdminRole =async (userID)=>{
 try{
    
